@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -37,9 +39,18 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            'user' => fn () => $request->user()
-                ? $request->user()->only('id', 'username', 'email')
-                : null,
+            'routes' => [
+                ["path" => "/absen", "name" => "absen", "acc" => 3],
+                ["path" => "/user-management", "name" => "user managemenrt", "acc" => 1],
+                ["path" => "/chat", "name" => "chat", "acc" => 3],
+                ["path" => "/list-absen", "name" => "list absen", "acc" => 2],
+            ],
+            'user' => fn () => DB::table('profiles as p')
+                ->join('users as u', 'u.id', '=', 'p.user_id')
+                ->join('roles as r', 'r.id', '=', 'p.role_id')
+                ->where('p.user_id', auth()->user() ? auth()->user()->id : 0)
+                ->select('p.*', 'r.role', 'u.username', 'u.email')
+                ->get(),
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
