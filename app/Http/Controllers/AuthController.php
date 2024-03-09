@@ -68,7 +68,7 @@ class AuthController extends Controller
         Profile::create([
             "user_id" => $user->id,
             "school_id" => $validateRegister["headschool"],
-            "role_id" => 3
+            "role_id" => 1
         ]);
 
         $user->sendEmailVerificationNotification();

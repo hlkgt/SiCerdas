@@ -1,11 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::middleware(["guest"])->group(function () {
     Route::get('/auth/login', [AuthController::class, 'login'])->name('login');
@@ -20,13 +17,11 @@ Route::middleware(["guest"])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/', function () {
-        return Inertia::render('HelloWorld');
-    })->middleware('verified')->name('home');
-
     Route::get('/email/verify', [AuthController::class, 'unVerified'])->name('verification.notice');
-
     Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'isVerified'])->middleware(['signed'])->name('verification.verify');
-
     Route::post('/email/verification-notification', [AuthController::class, 'resendLink'])->middleware(['throttle:6,1'])->name('verification.send');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/', [DashboardController::class, 'home']);
 });
