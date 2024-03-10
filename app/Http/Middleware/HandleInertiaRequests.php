@@ -50,9 +50,10 @@ class HandleInertiaRequests extends Middleware
                 ->join('roles as r', 'r.id', '=', 'p.role_id')
                 ->where('p.user_id', auth()->user() ? auth()->user()->id : 0)
                 ->select('p.*', 'r.role', 'u.username', 'u.email')
-                ->get(),
+                ->first(),
             'flash' => [
-                'message' => fn () => $request->session()->get('message')
+                'message' => fn () => $request->session()->get('message'),
+                'success' => fn () => $request->session()->get('success'),
             ],
         ]);
     }

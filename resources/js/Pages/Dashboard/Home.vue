@@ -4,7 +4,7 @@ import { usePage } from '@inertiajs/vue3'
 import DashboardTemplate from '../../Templates/DashboardTemplate.vue'
 
 const page = usePage()
-const user = computed(() => page.props.user[0])
+const user = computed(() => page.props.user)
 </script>
 <template>
   <DashboardTemplate title="Home | SiCerdas">

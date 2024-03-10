@@ -9,7 +9,7 @@ defineProps({
 
 const page = usePage()
 const routes = computed(() => page.props.routes)
-const user = computed(() => page.props.user[0])
+const user = computed(() => page.props.user)
 let isOpen = ref(false)
 function handleSideBar() {
   isOpen.value = !isOpen.value
@@ -88,7 +88,7 @@ function handleSideBar() {
             <img src="../../image/icons/menu-icon.svg" alt="icon" />
           </button>
         </div>
-        <div class="rounded-md bg-white p-4 h-screen shadow-xl">
+        <div class="rounded-md bg-white py-4 px-8 h-screen shadow-xl">
           <slot></slot>
         </div>
       </div>
