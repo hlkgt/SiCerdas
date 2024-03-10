@@ -16,10 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("school_id");
             $table->unsignedBigInteger("role_id");
-            $table->text("class")->nullable();
+            $table->unsignedBigInteger("class_id")->nullable();
             $table->enum("gender", ["laki-laki", "perempuan"])->nullable();
-            $table->text("date_birth")->nullable();
-            $table->text("image_path")->nullable();
+            $table->date("date_birth")->nullable();
             $table->timestamps();
         });
     }

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(["guest"])->group(function () {
@@ -23,5 +25,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/', [DashboardController::class, 'home']);
+    Route::get('/', [DashboardController::class, 'home'])->name('home');
+    Route::get('/absen', [DashboardController::class, 'absen'])->name('absen');
+    Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
+    Route::post('/profile', [UserController::class, 'updateProfile'])->name('update.profile');
+    Route::post('/absen', [AbsenController::class, 'createAbsen'])->name('create.abses');
 });

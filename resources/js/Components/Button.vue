@@ -12,7 +12,7 @@ defineProps({
     :type="type"
     :disabled="isDisabled"
     :class="isDisabled ? 'bg-primary/40 cursor-not-allowed' : 'bg-primary'"
-    class="px-6 py-2 rounded-lg font-bold text-xl capitalize text-white">
+    class="px-6 py-2 rounded-lg font-bold text-xl capitalize text-white w-full">
     {{ text }}
   </button>
 </template>
