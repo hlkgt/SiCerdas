@@ -7,6 +7,15 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
+    protected function getClassUser()
+    {
+        return $user = DB::table('profiles as p')
+            ->join('users as u', 'u.id', '=', 'p.user_id')
+            ->where('u.id', auth()->user()->id)
+            ->select('p.class_id')
+            ->first();
+    }
+
     protected function getClassLists()
     {
         $id = auth()->user()->id;
@@ -22,11 +31,7 @@ class DashboardController extends Controller
 
     public function absen()
     {
-        $user = DB::table('profiles as p')
-            ->join('users as u', 'u.id', '=', 'p.user_id')
-            ->where('u.id', auth()->user()->id)
-            ->select('p.class_id')
-            ->first();
+        $user = $this->getClassUser();
         if ($user->class_id === null) {
             return redirect()->route('profile')->with(["message" => "Opps, complete your personal data first"]);
         }
@@ -36,5 +41,27 @@ class DashboardController extends Controller
     public function profile()
     {
         return Inertia::render('User/User', ["classLists" => $this->getClassLists()]);
+    }
+
+    public function chat()
+    {
+        $user = $this->getClassUser();
+        if ($user->class_id === null) {
+            return redirect()->route('profile')->with(["message" => "Opps, complete your personal data first"]);
+        }
+
+        $user = DB::table('profiles as p')
+            ->join('users as u', 'u.id', '=', 'p.user_id')
+            ->where('u.id', auth()->user()->id)
+            ->select('p.school_id', 'u.id')
+            ->first();
+
+        $friend_lists = DB::table('profiles as p')
+            ->join('users as u', 'u.id', '=', 'p.user_id')
+            ->join('user_classes as c', 'p.class_id', '=', 'c.id')
+            ->where([['p.school_id', $user->school_id], ['p.user_id', '<>', $user->id]])
+            ->select('p.*', 'u.username', 'c.class')
+            ->get();
+        return Inertia::render('Chat/Chat', ["friendLists" => $friend_lists]);
     }
 }

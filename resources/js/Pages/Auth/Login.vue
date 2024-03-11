@@ -75,7 +75,7 @@ function login() {
         <label for="remember_me">remember me</label>
       </div>
       <p class="text-center mt-6 mb-2 text-base font-medium">
-        Dont have account?
+        Don't have account?
         <Link href="/auth/register" class="font-semibold text-primary underline"
           >click here</Link
         >

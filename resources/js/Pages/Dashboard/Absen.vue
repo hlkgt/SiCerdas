@@ -32,7 +32,7 @@ const presentOptions = [
     option: 'Izin',
   },
   {
-    value: 'tanpa keterangan',
+    value: 'tanpa-keterangan',
     option: 'Tanpa Keterangan',
   },
 ]
@@ -42,13 +42,13 @@ classLists.value.map((list) => {
 })
 </script>
 <template>
-  <DashboardTemplate title="Absen | SiCerdas" :active="1">
+  <DashboardTemplate title="Absen | SiCerdas" :active="2">
     <div class="grid grid-cols-1 lg:grid-cols-12">
       <div class="col-span-12">
         <h1 class="text-4xl mb-6 text-slate-600">
           How are you today
           <span class="font-bold">{{ user.username }}</span
-          >?, ready to learn, now?
+          >? Are you ready to attend the class today?
         </h1>
         <SuccessMessage
           v-if="page.props.flash.success"
