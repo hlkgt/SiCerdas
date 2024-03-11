@@ -40,10 +40,11 @@ class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             'routes' => [
-                ["path" => "/absen", "name" => "absen", "acc" => 3],
-                ["path" => "/user-management", "name" => "user managemenrt", "acc" => 1],
-                ["path" => "/chat", "name" => "chat", "acc" => 3],
-                ["path" => "/list-absen", "name" => "list absen", "acc" => 2],
+                ["id" => 1, "path" => "/", "name" => "home", "acc" => [2, 3]],
+                ["id" => 2, "path" => "/absen", "name" => "absen", "acc" => 3],
+                ["id" => 3, "path" => "/user-management", "name" => "user managemenrt", "acc" => 1],
+                ["id" => 4, "path" => "/chat", "name" => "chat", "acc" => 3],
+                ["id" => 5, "path" => "/list-absen", "name" => "list absen", "acc" => 2],
             ],
             'user' => fn () => DB::table('profiles as p')
                 ->join('users as u', 'u.id', '=', 'p.user_id')
