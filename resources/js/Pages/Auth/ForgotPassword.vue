@@ -9,7 +9,6 @@ const form = useForm({
 })
 function resetPassword() {
   form.post('/forgot-password', form)
-  console.log(form)
 }
 </script>
 

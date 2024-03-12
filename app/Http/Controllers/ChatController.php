@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatSender;
 use App\Models\Chat;
 use App\Models\User;
 use Carbon\Carbon;
@@ -24,6 +25,11 @@ class ChatController extends Controller
         $request->validate([
             "message" => 'required'
         ]);
+        $message = [
+            "message" => $request->message,
+            "status" => 'receive'
+        ];
+        event(new ChatSender($message));
         Chat::create([
             'user_id' => $request->user_id,
             'friend_id' => $request->friend_id,
