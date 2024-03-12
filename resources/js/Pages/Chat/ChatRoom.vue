@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { usePage, Link, useForm, router } from '@inertiajs/vue3'
 import DashboardTemplate from '../../Templates/DashboardTemplate.vue'
 
@@ -7,6 +7,12 @@ const page = usePage()
 const me = computed(() => page.props.me)
 const friend = computed(() => page.props.friend)
 const chatLists = computed(() => page.props.chatLists)
+const messageContainer = ref(null)
+
+Echo.channel('chat').listen('ChatSender', (e) => {
+  chatLists.value.push(e)
+  messageContainer.value.scrollTop = messageContainer.value.scrollHeight
+})
 
 const form = useForm({
   user_id: me.value.id,
@@ -16,10 +22,12 @@ const form = useForm({
 
 function sendMessage() {
   router.post('/chat-room/send', form, {
-    onSuccess: () => {
-      const bodyMessage = document.getElementById('body-message')
-      bodyMessage.scrollTop = bodyMessage.scrollHeight
+    onFinish: () => {
       form.reset('message')
+    },
+    onSuccess: () => {
+      messageContainer.value.scrollTop = messageContainer.value.scrollHeight
+      form.clearErrors()
     },
     onError: (errors) => {
       form.errors.message = errors.message
@@ -40,7 +48,9 @@ function sendMessage() {
         /></Link>
         <h1 class="text-4xl font-bold text-slate-600">{{ friend.username }}</h1>
       </div>
-      <div class="max-h-full h-full overflow-y-scroll p-4" id="body-message">
+      <div
+        class="max-h-full h-full overflow-y-scroll p-4"
+        ref="messageContainer">
         <div v-if="chatLists.length === 0">Message not yet</div>
         <div v-else>
           <div
@@ -81,7 +91,7 @@ function sendMessage() {
             :placeholder="form.errors.message || 'Type Message Here'"
             autocomplete="off"
             autofocus />
-          <button type="submit">
+          <button type="submit" :disabled="form.processing">
             <img
               src="../../../image/icons/send-icon.svg"
               alt="icon"
