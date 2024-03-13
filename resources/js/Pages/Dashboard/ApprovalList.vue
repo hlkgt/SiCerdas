@@ -1,6 +1,6 @@
 <script setup>
-import { defineProps } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { defineProps, computed } from 'vue'
+import { useForm, usePage } from '@inertiajs/vue3'
 import DashboardTemplate from '../../Templates/DashboardTemplate.vue'
 import SuccessMessage from '../../Components/SuccessMessage.vue'
 import ErrorMessage from '../../Components/ErrorMessage.vue'
@@ -9,12 +9,17 @@ defineProps({
   listApproval: Array,
 })
 
+const page = usePage()
+const listApproval = computed(() => page.props.listApproval)
+
+Echo.channel('send-approval').listen('SendApproval', (user) => {
+  listApproval.value.push(user)
+})
+
 const form = useForm({
   userId: null,
   type: null,
 })
-
-const headers = ['ID', 'username', 'email', 'school', 'status', 'action']
 
 function handleApprove(userId, type) {
   form.userId = userId
@@ -42,6 +47,7 @@ function handleApprove(userId, type) {
       <div
         class="col-span-12 md:col-span-6 lg:col-span-4 shadow-md p-4 rounded-md"
         v-for="(list, index) in listApproval"
+        v-if="listApproval.length !== 0"
         :key="index">
         <h1 class="text-center text-2xl font-semibold mb-2">
           {{ list.username }}
@@ -72,6 +78,12 @@ function handleApprove(userId, type) {
             approve
           </button>
         </div>
+      </div>
+      <div class="col-span-12" v-else>
+        <h1
+          class="text-2xl text-center text-slate-600 shadow-md p-4 rounded-md">
+          who need approval?
+        </h1>
       </div>
     </div>
   </DashboardTemplate>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ApproveProcessed;
 use App\Mail\ApproveMail;
 use App\Mail\RejectedMail;
 use App\Models\User;
@@ -61,14 +62,17 @@ class UserController extends Controller
     {
         $user = User::find($request->userId);
         if ($request->type === "approved") {
+            event(new ApproveProcessed($request->userId, "approved"));
             $user->approved = true;
             $user->save();
 
             Mail::to($user)->send(new ApproveMail($user));
-
             return redirect()->back()->with(["success" => "Approved " . $user->username . " successfully"]);
         } else {
+            event(new ApproveProcessed($request->userId, "rejected"));
+
             $user->delete();
+
             Mail::to($user)->send(new RejectedMail($user));
             return redirect()->back()->with(["message" => "Rejected user " . $user->username . " successfully, and user being deleted"]);
         }
