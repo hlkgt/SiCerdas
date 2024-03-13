@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendApproval;
 use App\Models\Profile;
 use App\Models\School;
 use App\Models\User;
@@ -75,6 +76,8 @@ class AuthController extends Controller
             "school_id" => $validateRegister["headschool"],
             "role_id" => 3
         ]);
+
+        event(new SendApproval($user));
 
         if (Auth::attempt(['email' => $validateRegister["email"], 'password' => $validateRegister["password"]])) {
             $request->session()->regenerate();

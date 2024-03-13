@@ -1,11 +1,42 @@
 <script setup>
-import { defineProps } from 'vue'
-import { Head } from '@inertiajs/vue3'
+import { defineProps, computed, ref } from 'vue'
+import { Head, usePage } from '@inertiajs/vue3'
+import ErrorMessage from '../../Components/ErrorMessage.vue'
+import SuccessMessage from '../../Components/SuccessMessage.vue'
 defineProps({
   user: {
     type: Object,
   },
 })
+
+const page = usePage()
+const user = computed(() => page.props.user)
+const message = ref(null)
+let type = ref(false)
+const showAlertMessage = ref(0)
+
+Echo.channel('approval-processed').listen(
+  'ApproveProcessed',
+  ({ userId, status }) => {
+    if (user.value.id === userId && status === 'rejected') {
+      setApproval('your account rejected,please check your email', 0)
+      setTimeout(() => {
+        window.location.reload()
+      }, 3000)
+    } else if (user.value.id === userId && status === 'approved') {
+      setApproval('your account approved,please wait to redirect', 1)
+      setTimeout(() => {
+        window.location.href = '/email/verify'
+      }, 3000)
+    }
+  }
+)
+
+function setApproval(setMessage, status) {
+  showAlertMessage.value = 1
+  status && (type.value = true)
+  message.value = setMessage
+}
 </script>
 
 <template>
@@ -18,6 +49,10 @@ defineProps({
       <h1 class="text-center font-bold text-3xl mb-6 capitalize">
         waiting approval
       </h1>
+      <div class="flex justify-center items-center" v-if="showAlertMessage">
+        <SuccessMessage :message="message" v-if="type" />
+        <ErrorMessage :message="message" v-else />
+      </div>
       <h1 class="text-2xl mb-4">
         Hello <span class="font-bold">{{ user.username }}</span>
       </h1>
