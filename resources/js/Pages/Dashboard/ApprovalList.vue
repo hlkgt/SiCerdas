@@ -25,8 +25,8 @@ function handleApprove(userId, type) {
 
 <template>
   <DashboardTemplate title="Absen | SiCerdas" :active="5">
-    <div>
-      <div>
+    <div class="grid grid-cols-12 gap-4">
+      <div class="col-span-12">
         <h1 class="text-4xl mb-6 text-slate-600 font-semibold">
           List Student Need Approval
         </h1>
@@ -39,70 +39,40 @@ function handleApprove(userId, type) {
             :message="$page.props.flash.message" />
         </div>
       </div>
-      <table class="min-w-full divide-y divide-gray-200 border-2">
-        <thead>
-          <tr>
-            <th
-              v-for="head in headers"
-              class="px-6 py-3 bg-gray-50 text-center text-base font-bold leading-4 text-gray-500 uppercase tracking-wider">
-              {{ head }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-if="listApproval.length === 0">
-            <td
-              class="px-6 py-4 whitespace-no-wrap capitalize text-center text-slate-600 text-basexl font-semibold"
-              colspan="6">
-              who need approval?
-            </td>
-          </tr>
-          <tr
-            v-else
-            class="hover:bg-gray-300"
-            v-for="(list, index) in listApproval"
-            :key="index">
-            <td class="px-6 py-4 whitespace-no-wrap">
-              {{ index + 1 }}
-            </td>
-            <td class="px-6 py-4 whitespace-no-wrap">
-              {{ list.username }}
-            </td>
-            <td class="px-6 py-4 whitespace-no-wrap">
-              {{ list.email }}
-            </td>
-            <td class="px-6 py-4 whitespace-no-wrap">
-              {{ list.name }}
-            </td>
-            <td class="px-6 py-4 whitespace-no-wrap">
-              <p class="p-2 rounded-md bg-red-500 text-center text-white">
-                Need Approved
-              </p>
-            </td>
-            <td
-              class="px-6 py-4 whitespace-no-wrap flex justify-center items-center gap-2">
-              <button
-                :disabled="form.processing"
-                :class="
-                  form.processing ? 'bg-blue-300 cursor-wait' : 'bg-blue-500'
-                "
-                @click.prevent="handleApprove(list.id, 'rejected')"
-                class="p-2 rounded-md text-white text-center capitalize">
-                reject
-              </button>
-              <button
-                :disabled="form.processing"
-                :class="
-                  form.processing ? 'bg-teal-300 cursor-wait' : 'bg-teal-500'
-                "
-                class="p-2 rounded-md bg-teal-500 text-white text-center capitalize"
-                @click.prevent="handleApprove(list.id, 'approved')">
-                approve
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div
+        class="col-span-12 md:col-span-6 lg:col-span-4 shadow-md p-4 rounded-md"
+        v-for="(list, index) in listApproval"
+        :key="index">
+        <h1 class="text-center text-2xl font-semibold mb-2">
+          {{ list.username }}
+        </h1>
+        <p class="text-base mb-4">
+          <span class="text-lg font-semibold w-full block capitalize"
+            >hai principle</span
+          >
+          i'am
+          <span class="text-lg font-semibold">{{ list.username }}</span
+          >, please approve my account with email
+          <span class="text-lg font-semibold">{{ list.email }}</span> to join to
+          your school, and start in the class
+        </p>
+        <div class="flex gap-2 justify-center items-center">
+          <button
+            :disabled="form.processing"
+            :class="form.processing ? 'bg-rose-300 cursor-wait' : 'bg-rose-500'"
+            @click.prevent="handleApprove(list.id, 'rejected')"
+            class="p-2 rounded-md text-white text-center capitalize">
+            reject
+          </button>
+          <button
+            :disabled="form.processing"
+            :class="form.processing ? 'bg-teal-300 cursor-wait' : 'bg-teal-500'"
+            class="p-2 rounded-md bg-teal-500 text-white text-center capitalize"
+            @click.prevent="handleApprove(list.id, 'approved')">
+            approve
+          </button>
+        </div>
+      </div>
     </div>
   </DashboardTemplate>
 </template>
