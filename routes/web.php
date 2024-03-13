@@ -6,6 +6,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::middleware(["guest"])->group(function () {
     Route::get('/auth/login', [AuthController::class, 'login'])->name('login');
@@ -23,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/email/verify', [AuthController::class, 'unVerified'])->name('verification.notice');
     Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'isVerified'])->middleware(['signed'])->name('verification.verify');
     Route::post('/email/verification-notification', [AuthController::class, 'resendLink'])->middleware(['throttle:6,1'])->name('verification.send');
+    Route::get('/approval', [AuthController::class, 'unApprove'])->name('approval');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -34,4 +36,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/absen', [AbsenController::class, 'createAbsen'])->name('create.abses');
     Route::get('/chat-room', [ChatController::class, 'getRoom'])->name('get.room');
     Route::post('/chat-room/send', [ChatController::class, 'sendMessage'])->name('send.message');
+    Route::get('/list-approval', [UserController::class, 'approveUser'])->name('approve.user');
+    Route::post('/list-approval', [UserController::class, 'handleApprove'])->name('approve.user');
 });
