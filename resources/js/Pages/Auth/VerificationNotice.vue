@@ -25,11 +25,10 @@ function resendLink() {
         Hello <span class="font-bold">{{ user.username }}</span>
       </h1>
       <p class="font-medium">
-        Before you start this app, please verify your account first. You can
-        check the verification link on your email :
+        Your account successfully approve by principle, before you start this app, please verify your account first. You can
+        send verification link and check on your email :
         <span class="font-bold">{{ user.email }}</span
-        >, If you miss the verification link, you can resend it by clicking the
-        "Resend Link" button.
+        >, You can send it verification link by clicking the "Send Link" button.
       </p>
       <div class="mt-4 flex justify-end items-center gap-3">
         <form @submit.prevent="router.post('/logout')">
@@ -38,7 +37,7 @@ function resendLink() {
         <form @submit.prevent="resendLink">
           <div class="flex justify-center">
             <Button
-              text="resend link"
+              text="send link"
               type="submit"
               :is-disabled="form.processing" />
           </div>

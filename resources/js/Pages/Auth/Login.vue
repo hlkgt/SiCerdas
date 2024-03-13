@@ -5,7 +5,7 @@ import Input from '../../Components/Input.vue'
 import Button from '../../Components/Button.vue'
 import ErrorMessage from '../../Components/ErrorMessage.vue'
 import AuthTemplate from '../../Templates/AuthTemplate.vue'
-import SuccessMessage from '../../Components/SuccessMessage.vue'
+// import SuccessMessage from '../../Components/SuccessMessage.vue'
 
 defineProps({ headSchools: { type: Array, default: [] } })
 
@@ -45,11 +45,11 @@ function login() {
           v-if="form.errors.message"
           :message="form.errors.message" />
       </div>
-      <div class="mb-4 flex justify-center">
+      <!-- <div class="mb-4 flex justify-center">
         <SuccessMessage
           v-if="$page.props.flash.message"
           :message="$page.props.flash.message" />
-      </div>
+      </div> -->
       <Input
         placeholder="email"
         type="email"

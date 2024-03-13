@@ -31,7 +31,11 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $credentials["email"], 'password' => $credentials["password"]], $request->remember_me)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/');
+            if (auth()->user()->approved) {
+                return redirect()->intended('/');
+            } else {
+                return redirect()->route('approval');
+            }
         }
 
         return back()->withErrors([
@@ -63,6 +67,7 @@ class AuthController extends Controller
             "username" => $validateRegister["username"],
             "email" => $validateRegister["email"],
             "password" => $validateRegister["password"],
+            "approved" => false
         ]);
 
         Profile::create([
@@ -71,9 +76,10 @@ class AuthController extends Controller
             "role_id" => 3
         ]);
 
-        $user->sendEmailVerificationNotification();
-
-        return redirect()->route('login')->with(["message" => "Register Successfuly, Please login first"]);
+        if (Auth::attempt(['email' => $validateRegister["email"], 'password' => $validateRegister["password"]])) {
+            $request->session()->regenerate();
+        }
+        return redirect()->route('approval');
     }
 
     public function forgotPassword()
@@ -125,9 +131,23 @@ class AuthController extends Controller
             : back()->withErrors(['email' => [__($status)]]);
     }
 
+    public function unApprove()
+    {
+        $user = Auth::user();
+        if ($user->approved === 1) {
+            return redirect('/');
+        }
+        return Inertia::render('Auth/ApproveView', [
+            "user" => $user
+        ]);
+    }
+
     public function unVerified()
     {
         $user = Auth::user();
+        if ($user->approved !== 1) {
+            return redirect()->route('approval');
+        }
         if ($user->email_verified_at !== null) {
             return redirect('/');
         }
