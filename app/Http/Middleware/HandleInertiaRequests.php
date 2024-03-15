@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
                 ["id" => 4, "path" => "/chat", "name" => "chat", "acc" => 3],
                 ["id" => 5, "path" => "/list-approval", "name" => "list approval", "acc" => 2],
                 ["id" => 6, "path" => "/list-absen", "name" => "list absen", "acc" => 2],
+                ["id" => 7, "path" => "/list-token", "name" => "token", "acc" => 1],
             ],
             'user' => fn () => DB::table('profiles as p')
                 ->join('users as u', 'u.id', '=', 'p.user_id')
@@ -56,6 +57,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),
                 'success' => fn () => $request->session()->get('success'),
+                'checkToken' => fn () => $request->session()->get('check-token'),
             ],
         ]);
     }

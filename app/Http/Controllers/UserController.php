@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Events\ApproveProcessed;
+use App\Events\CheckTokenEvent;
+use App\Events\UsageTokenEvent;
 use App\Mail\ApproveMail;
 use App\Mail\RejectedMail;
+use App\Mail\ShareToken;
+use App\Models\Token;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -76,5 +82,80 @@ class UserController extends Controller
             Mail::to($user)->send(new RejectedMail($user));
             return redirect()->back()->with(["message" => "Rejected user " . $user->username . " successfully, and user being deleted"]);
         }
+    }
+
+    public function generateToken()
+    {
+        Token::create([
+            "token" => Str::random(12),
+            "usage" => 0,
+            "max_usage" => 15,
+            "created_at" => Carbon::now(),
+            "updated_at" => Carbon::now(),
+        ]);
+
+        return redirect()->back()->with(["message" => "generate token successfully"]);
+    }
+
+    public function shareToken(Request $request)
+    {
+        if ($request->email === null) {
+            return redirect()->back()->withErrors(["error" => "email field is required"]);
+        }
+        Mail::to($request->email)->send(new ShareToken($request->token));
+        return redirect()->back()->with(["message" => "share token to " . $request->email . " successfully"]);
+    }
+
+    public function checkToken(Request $request)
+    {
+        $find_token = DB::table('principle_tokens')->where('token', '=', $request->token)->first();
+        if ($find_token === null || $find_token->usage === $find_token->max_usage) {
+            event(new CheckTokenEvent("token invalid, follow up on your admin", false));
+        } else {
+            event(new CheckTokenEvent("token valid, please entry input bellow", true));
+        }
+
+        return back();
+    }
+
+    public function loginPrinciple(Request $request)
+    {
+        $validate = $request->validate([
+            'gender' => 'required',
+            'date' => 'required',
+        ]);
+
+        DB::table('users')
+            ->where('id', auth()->user()->id)
+            ->update([
+                "approved" => true,
+                "email_verified_at" => Carbon::now()
+            ]);
+
+        DB::table('profiles')
+            ->where('user_id', auth()->user()->id)
+            ->update([
+                "gender" => $validate["gender"],
+                "date_birth" => $validate["date"],
+                "role_id" => 2
+            ]);
+
+        DB::table('principle_tokens')
+            ->where('token', '=', $request->token)
+            ->increment('usage');
+
+        $token = DB::table('principle_tokens')
+            ->where('token', '=', $request->token)->first();
+
+        event(new UsageTokenEvent($token->token, $token->usage));
+
+        if ($token->usage === $token->max_usage) {
+            DB::table('principle_tokens')
+                ->where('token', '=', $request->token)->update([
+                    "expired_at" => Carbon::now()
+                ]);
+        }
+
+        return redirect()->route('home');
     }
 }
