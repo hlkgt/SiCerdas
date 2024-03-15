@@ -25,6 +25,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'isVerified'])->middleware(['signed'])->name('verification.verify');
     Route::post('/email/verification-notification', [AuthController::class, 'resendLink'])->middleware(['throttle:6,1'])->name('verification.send');
     Route::get('/approval', [AuthController::class, 'unApprove'])->name('approval');
+    Route::post('/check-token', [UserController::class, 'checkToken'])->name('check.token');
+    Route::post('/login-principle', [UserController::class, 'loginPrinciple'])->name('login.principle');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -38,4 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/chat-room/send', [ChatController::class, 'sendMessage'])->name('send.message');
     Route::get('/list-approval', [UserController::class, 'approveUser'])->name('approve.user');
     Route::post('/list-approval', [UserController::class, 'handleApprove'])->name('approve.user');
+    Route::get('/list-token', [DashboardController::class, 'token'])->name('token.list');
+    Route::post('/generate-token', [UserController::class, 'generateToken'])->name('generate.token');
+    Route::post('/share-token', [UserController::class, 'shareToken'])->name('share.token');
 });

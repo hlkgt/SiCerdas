@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Token;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -63,5 +65,14 @@ class DashboardController extends Controller
             ->select('p.*', 'u.username', 'c.class')
             ->get();
         return Inertia::render('Chat/Chat', ["friendLists" => $friend_lists]);
+    }
+
+    public function token()
+    {
+        $users = DB::table('users')
+            ->select('email')
+            ->get();
+        $tokens = Token::all();
+        return Inertia::render('Dashboard/TokenList', ["tokens" => $tokens, "users" => $users]);
     }
 }

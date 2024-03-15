@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("user_id");
-            $table->unsignedBigInteger("school_id");
+            $table->unsignedBigInteger("school_id")->nullable();
             $table->unsignedBigInteger("role_id");
             $table->unsignedBigInteger("class_id")->nullable();
             $table->enum("gender", ["laki-laki", "perempuan"])->nullable();
