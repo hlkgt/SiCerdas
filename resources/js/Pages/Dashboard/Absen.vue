@@ -60,7 +60,8 @@ classLists.value.map((list) => {
           label="username"
           placeholder="username"
           name="username"
-          v-model:value="form.username" />
+          v-model:value="form.username"
+          :readonly="true" />
         <SelectInput
           label="class"
           name="class"

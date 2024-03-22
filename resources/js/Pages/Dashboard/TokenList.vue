@@ -97,7 +97,7 @@ function shareToken() {
     </div>
   </div>
 
-  <DashboardTemplate title="Home | SiCerdas" :active="1">
+  <DashboardTemplate title="Home | SiCerdas" :active="7">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div class="col-span-1 lg:col-span-12 flex items-center gap-8">
         <h1 class="text-4xl text-slate-600 font-bold">List Token</h1>

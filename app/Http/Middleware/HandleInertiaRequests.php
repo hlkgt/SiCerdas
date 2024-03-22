@@ -42,7 +42,7 @@ class HandleInertiaRequests extends Middleware
             'routes' => [
                 ["id" => 1, "path" => "/", "name" => "home", "acc" => [2, 3]],
                 ["id" => 2, "path" => "/absen", "name" => "absen", "acc" => 3],
-                ["id" => 3, "path" => "/user-management", "name" => "user managemenrt", "acc" => 1],
+                ["id" => 3, "path" => "/user-management", "name" => "user management", "acc" => 1],
                 ["id" => 4, "path" => "/chat", "name" => "chat", "acc" => 3],
                 ["id" => 5, "path" => "/list-approval", "name" => "list approval", "acc" => 2],
                 ["id" => 6, "path" => "/list-absen", "name" => "list absen", "acc" => 2],
