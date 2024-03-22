@@ -16,13 +16,15 @@ class CheckTokenEvent implements ShouldBroadcast
 
     protected $message;
     protected $status;
+    protected $user_request;
     /**
      * Create a new event instance.
      */
-    public function __construct(string $message, bool $status)
+    public function __construct(string $message, bool $status, int $user_id)
     {
         $this->message = $message;
         $this->status = $status;
+        $this->user_request = $user_id;
     }
 
     /**
@@ -37,6 +39,6 @@ class CheckTokenEvent implements ShouldBroadcast
 
     public function broadcastWith(): array
     {
-        return ["message" => $this->message, "status" => $this->status];
+        return ["message" => $this->message, "status" => $this->status, "user_id" => $this->user_request];
     }
 }

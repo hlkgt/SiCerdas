@@ -48,9 +48,14 @@ Echo.channel('approval-processed').listen(
     }
   }
 )
-Echo.channel('check-token').listen('CheckTokenEvent', ({ status, message }) => {
-  setApproval(message, status)
-})
+Echo.channel('check-token').listen(
+  'CheckTokenEvent',
+  ({ status, message, user_id }) => {
+    if (user.value.id === user_id) {
+      setApproval(message, status)
+    }
+  }
+)
 
 function setApproval(setMessage, status) {
   showAlertMessage.value = 1

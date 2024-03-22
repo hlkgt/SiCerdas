@@ -12,6 +12,7 @@ use App\Models\Token;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -109,10 +110,11 @@ class UserController extends Controller
     public function checkToken(Request $request)
     {
         $find_token = DB::table('principle_tokens')->where('token', '=', $request->token)->first();
+        $user_id = Auth::user()->id;
         if ($find_token === null || $find_token->usage === $find_token->max_usage) {
-            event(new CheckTokenEvent("token invalid, follow up on your admin", false));
+            event(new CheckTokenEvent("token invalid, follow up on your admin", false, $user_id));
         } else {
-            event(new CheckTokenEvent("token valid, please entry input bellow", true));
+            event(new CheckTokenEvent("token valid, please entry input bellow", true, $user_id));
         }
 
         return back();

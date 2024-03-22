@@ -51,7 +51,11 @@ function sendMessage() {
       <div
         class="max-h-full h-full overflow-y-scroll p-4"
         ref="messageContainer">
-        <div v-if="chatLists.length === 0">Message not yet</div>
+        <div
+          v-if="chatLists.length === 0"
+          class="flex w-full h-full justify-center items-center">
+          <h1 class="font-semibold text-2xl text-slate-600">Message not yet</h1>
+        </div>
         <div v-else>
           <div
             :class="
