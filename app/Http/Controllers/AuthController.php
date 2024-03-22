@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Password;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -30,10 +31,16 @@ class AuthController extends Controller
             'password' => 'required|min:8|max:16',
         ]);
 
-        if (Auth::attempt(['email' => $credentials["email"], 'password' => $credentials["password"]], $request->remember_me)) {
-            $request->session()->regenerate();
+        $find_user = DB::table('users')->where('email', $credentials['email'])->first();
+        if ($find_user && $find_user->banned) {
+            return back()->withErrors([
+                'email' => 'Sorry, This Account is Banned',
+            ])->onlyInput('email');
+        }
 
+        if (Auth::attempt(['email' => $credentials["email"], 'password' => $credentials["password"]], $request->remember_me)) {
             if (auth()->user()->approved) {
+                $request->session()->regenerate();
                 return redirect()->intended('/');
             } else {
                 return redirect()->route('approval');

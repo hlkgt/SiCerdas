@@ -38,6 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/absen', [AbsenController::class, 'createAbsen'])->name('create.abses');
     Route::get('/chat-room', [ChatController::class, 'getRoom'])->name('get.room');
     Route::post('/chat-room/send', [ChatController::class, 'sendMessage'])->name('send.message');
+    Route::get('/user-management', [UserController::class, 'userManagement'])->name('user.management');
+    Route::post('/user-management', [UserController::class, 'handlerBanned'])->name('banned.user');
     Route::get('/list-approval', [UserController::class, 'approveUser'])->name('approve.user');
     Route::post('/list-approval', [UserController::class, 'handleApprove'])->name('approve.user');
     Route::get('/list-token', [DashboardController::class, 'token'])->name('token.list');
