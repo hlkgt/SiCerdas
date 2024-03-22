@@ -20,6 +20,18 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
+    public function userManagement()
+    {
+        $users = DB::table('users')->where('id', '<>', auth()->user()->id)->select(['id', 'email', 'username', 'approved', 'banned'])->get();
+        return Inertia::render('User/ListUser', ["users" => $users]);
+    }
+
+    public function handlerBanned(Request $request)
+    {
+        DB::table('users')->where('id', $request->id)->update(['banned' => true]);
+        return redirect()->back()->with(['success' => 'banned user successfuly']);
+    }
+
     public function updateProfile(Request $request)
     {
         $validate = $request->validate([
